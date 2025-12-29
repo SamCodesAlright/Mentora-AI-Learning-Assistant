@@ -1,0 +1,20 @@
+# ===== Node & Common =====
+node_modules/
+.env
+.env.*
+npm-debug.log*
+yarn-error.log*
+
+# ===== Backend =====
+backend/node_modules/
+backend/uploads/
+backend/logs/
+
+# ===== Frontend =====
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
