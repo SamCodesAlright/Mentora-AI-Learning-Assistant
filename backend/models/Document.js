@@ -10,6 +10,7 @@ const documentSchema = new mongoose.Schema(
     title: {
       type: String,
       required: [true, "Please provide a title for the document"],
+      trim: true,
     },
     fileName: {
       type: String,
@@ -25,7 +26,7 @@ const documentSchema = new mongoose.Schema(
     },
     extractedText: {
       type: String,
-      required: "",
+      default: "",
     },
     chunks: [
       {
@@ -35,15 +36,19 @@ const documentSchema = new mongoose.Schema(
         },
         pageNumber: {
           type: Number,
-          required: 0,
+          default: 0,
         },
         chunkIndex: {
           type: Number,
-          required: 0,
+          required: true,
         },
       },
     ],
     uploadDate: {
+      type: Date,
+      default: Date.now,
+    },
+    lastAccessed: {
       type: Date,
       default: Date.now,
     },
