@@ -113,7 +113,8 @@ export const chunkText = (text, chunkSize = 500, overlap = 50) => {
  */
 
 export const findRelevantChunks = (chunks, query, maxChunks = 3) => {
-  if (!chunks || chunks.length === 0 || !query) {
+  // Strong defensive checks
+  if (!Array.isArray(chunks) || chunks.length === 0 || !query) {
     return [];
   }
 
@@ -141,57 +142,69 @@ export const findRelevantChunks = (chunks, query, maxChunks = 3) => {
   ]);
 
   const queryWords = query
-    .toLocaleLowerCase()
+    .toLowerCase()
     .split(/\s+/)
     .filter((w) => w.length > 2 && !stopWords.has(w));
 
+  // Fallback if query becomes meaningless after filtering
   if (queryWords.length === 0) {
     return chunks.slice(0, maxChunks).map((chunk) => ({
-      content: chunk.content,
-      chunkIndex: chunk.chunkIndex,
-      pageNumber: chunk.pageNumber,
-      _id: chunk._id,
+      content: chunk?.content || "",
+      chunkIndex: chunk?.chunkIndex ?? 0,
+      pageNumber: chunk?.pageNumber ?? 0,
+      _id: chunk?._id,
     }));
   }
 
-  const scoredChunks = chunks.map((chunk, index) => {
-    const content = chunk.content.toLocaleLowerCase();
-    const contentWords = content.split(/\s+/).length;
-    let score = 0;
+  const scoredChunks = chunks
+    .map((chunk, index) => {
+      // Guard against bad / corrupted chunk data
+      if (!chunk || typeof chunk.content !== "string") {
+        return null;
+      }
 
-    for (const word of queryWords) {
-      const exactMatches = content.match(
-        new RegExp(`\\b${word}\\b`, "g") || []
+      const content = chunk.content.toLowerCase();
+      const contentWords = content.split(/\s+/).length || 1;
+
+      let score = 0;
+
+      for (const word of queryWords) {
+        const exactMatches = (
+          content.match(new RegExp(`\\b${word}\\b`, "g")) || []
+        ).length;
+
+        const partialMatches = (content.match(new RegExp(word, "g")) || [])
+          .length;
+
+        score += exactMatches * 3;
+        score += Math.max(0, partialMatches - exactMatches) * 1.5;
+      }
+
+      const uniqueWordsFound = queryWords.filter((word) =>
+        content.includes(word)
       ).length;
 
-      score += exactMatches * 3;
+      if (uniqueWordsFound > 1) {
+        score += uniqueWordsFound * 2;
+      }
 
-      const partialMatches = content.match(new RegExp(word, "g") || []).length;
-      score += Math.max(0, partialMatches - exactMatches) * 1.5;
-    }
+      const normalizedScore = score / Math.sqrt(contentWords);
 
-    const uniqueWordsFound = queryWords.filter((word) =>
-      content.includes(word)
-    ).length;
+      // Safe position bonus (no .length crash)
+      const positionBonus =
+        chunks.length > 0 ? 1 - (index / chunks.length) * 0.1 : 1;
 
-    if (uniqueWordsFound > 1) {
-      score += uniqueWordsFound * 2;
-    }
-
-    const normalizedScore = score / Math.sqrt(contentWords);
-
-    const positionBonus = 1 - (index / chunks.length) * 0.1;
-
-    return {
-      content: chunk.content,
-      chunkIndex: chunk.chunkIndex,
-      pageNumber: chunk.pageNumber,
-      _id: chunk._id,
-      score: normalizedScore * positionBonus,
-      rawScore: score,
-      matchedWords: uniqueWordsFound,
-    };
-  });
+      return {
+        content: chunk.content,
+        chunkIndex: chunk.chunkIndex,
+        pageNumber: chunk.pageNumber,
+        _id: chunk._id,
+        score: normalizedScore * positionBonus,
+        rawScore: score,
+        matchedWords: uniqueWordsFound,
+      };
+    })
+    .filter(Boolean); // remove nulls safely
 
   return scoredChunks
     .filter((chunk) => chunk.score > 0)
@@ -206,3 +219,99 @@ export const findRelevantChunks = (chunks, query, maxChunks = 3) => {
     })
     .slice(0, maxChunks);
 };
+
+// export const findRelevantChunks = (chunks, query, maxChunks = 3) => {
+//   if (!chunks || chunks.length === 0 || !query) {
+//     return [];
+//   }
+
+//   const stopWords = new Set([
+//     "the",
+//     "is",
+//     "at",
+//     "which",
+//     "on",
+//     "a",
+//     "an",
+//     "and",
+//     "or",
+//     "but",
+//     "in",
+//     "with",
+//     "to",
+//     "of",
+//     "for",
+//     "by",
+//     "as",
+//     "that",
+//     "this",
+//     "it",
+//   ]);
+
+//   const queryWords = query
+//     .toLowerCase()
+//     .split(/\s+/)
+//     .filter((w) => w.length > 2 && !stopWords.has(w));
+
+//   if (queryWords.length === 0) {
+//     return chunks.slice(0, maxChunks).map((chunk) => ({
+//       content: chunk.content,
+//       chunkIndex: chunk.chunkIndex,
+//       pageNumber: chunk.pageNumber,
+//       _id: chunk._id,
+//     }));
+//   }
+
+//   const scoredChunks = chunks.map((chunk, index) => {
+//     const content = chunk.content.toLowerCase();
+//     const contentWords = content.split(/\s+/).length;
+//     let score = 0;
+
+//     for (const word of queryWords) {
+//       const exactMatches = content.match(
+//         new RegExp(`\\b${word}\\b`, "g") || []
+//       ).length;
+
+//       score += exactMatches * 3;
+
+//       const partialMatches = (content.match(new RegExp(word, "g")) || [])
+//         .length;
+//       score += Math.max(0, partialMatches - exactMatches) * 1.5;
+//     }
+
+//     const uniqueWordsFound = queryWords.filter((word) =>
+//       content.includes(word)
+//     ).length;
+
+//     if (uniqueWordsFound > 1) {
+//       score += uniqueWordsFound * 2;
+//     }
+
+//     const normalizedScore = score / Math.sqrt(contentWords);
+
+//     const positionBonus = 1 - (index / chunks.length) * 0.1;
+
+//     return {
+//       content: chunk.content,
+//       chunkIndex: chunk.chunkIndex,
+//       pageNumber: chunk.pageNumber,
+//       _id: chunk._id,
+//       score: normalizedScore * positionBonus,
+//       rawScore: score,
+//       matchedWords: uniqueWordsFound,
+//     };
+//   });
+
+//   return scoredChunks
+//     .filter((chunk) => chunk.score > 0)
+//     .sort((a, b) => {
+//       if (b.score !== a.score) {
+//         return b.score - a.score;
+//       }
+//       if (b.matchedWords !== a.matchedWords) {
+//         return b.matchedWords - a.matchedWords;
+//       }
+//       return a.chunkIndex - b.chunkIndex;
+//     })
+//     .slice(0, maxChunks);
+// };
