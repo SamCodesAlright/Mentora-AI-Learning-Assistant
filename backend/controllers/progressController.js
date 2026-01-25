@@ -27,7 +27,7 @@ export const getDashboard = async (req, res, next) => {
     flashcardSets.forEach((set) => {
       totalFlashcards += set.cards.length;
       reviewedFlashcards += set.cards.filter(
-        (card) => card.reviewCount > 0
+        (card) => card.reviewCount > 0,
       ).length;
       starredFlashcards += set.cards.filter((card) => card.isStarred).length;
     });
@@ -37,7 +37,7 @@ export const getDashboard = async (req, res, next) => {
     const averageScore =
       quizzes.length > 0
         ? Math.round(
-            quizzes.reduce((sum, q) => sum + q.score, 0) / quizzes.length
+            quizzes.reduce((sum, q) => sum + q.score, 0) / quizzes.length,
           )
         : 0;
 
