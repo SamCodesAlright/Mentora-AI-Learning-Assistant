@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Star, RotateCcw } from "lucide-react";
 
-const Flashcard = ({ flashcard, onToggleStar }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const handleFlip = () => setIsFlipped(!isFlipped);
+const Flashcard = ({ flashcard, onToggleStar, isFlipped, setIsFlipped }) => {
+  const handleFlip = () => setIsFlipped((prev) => !prev);
   return (
     <div className="relative w-full h-72">
       <div

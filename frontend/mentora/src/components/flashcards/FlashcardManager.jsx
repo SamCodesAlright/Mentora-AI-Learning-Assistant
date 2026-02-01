@@ -27,6 +27,7 @@ const FlashcardManager = ({ documentId }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [setToDelete, setSetToDelete] = useState(null);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const fetchFlashcardSets = async () => {
     setLoading(true);
@@ -66,6 +67,7 @@ const FlashcardManager = ({ documentId }) => {
       setCurrentCardIndex(
         (prevIndex) => (prevIndex + 1) % selectedSet.cards.length,
       );
+      setIsFlipped(false);
     }
   };
 
@@ -76,6 +78,7 @@ const FlashcardManager = ({ documentId }) => {
         (prevIndex) =>
           (prevIndex - 1 + selectedSet.cards.length) % selectedSet.cards.length,
       );
+      setIsFlipped(false);
     }
   };
 
@@ -164,6 +167,8 @@ const FlashcardManager = ({ documentId }) => {
             <Flashcard
               flashcard={currentCard}
               onToggleStar={handleToggleStar}
+              isFlipped={isFlipped}
+              setIsFlipped={setIsFlipped}
             />
           </div>
           {/* Navigation Controls */}
