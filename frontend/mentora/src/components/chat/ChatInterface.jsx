@@ -101,7 +101,7 @@ const ChatInterface = () => {
           )}
         </div>
         {isUser && (
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-700 font-semibold text-sm shrink-0 shadow-sm">
+          <div className="w-9 h-9 rounded-xl bg-linear-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-700 font-semibold text-sm shrink-0 shadow-sm">
             {user?.username?.charAt(0).toUpperCase() || "U"}
           </div>
         )}
