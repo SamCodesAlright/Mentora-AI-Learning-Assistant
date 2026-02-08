@@ -38,8 +38,7 @@ const submitQuiz = async (quizId, answers) => {
 const getQuizResults = async (quizId) => {
   try {
     const response = await axiosInstance.get(
-      API_PATHS.QUIZZES.SUBMIT_QUIZ(quizId),
-      { answers },
+      API_PATHS.QUIZZES.GET_QUIZ_RESULTS(quizId),
     );
     return response.data;
   } catch (error) {

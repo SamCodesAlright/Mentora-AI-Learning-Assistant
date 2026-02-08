@@ -89,12 +89,51 @@ export const submitQuiz = async (req, res, next) => {
     let correctCount = 0;
     const userAnswers = [];
 
+    // Helper to normalize an answer into a 0-based index
+    const resolveIndex = (ans, options) => {
+      const opts = Array.isArray(options) ? options : [];
+      if (typeof ans === "number") {
+        if (ans >= 0 && ans < opts.length) return ans;
+        if (ans - 1 >= 0 && ans - 1 < opts.length) return ans - 1;
+      }
+      if (typeof ans === "string") {
+        const trimmed = ans.trim();
+        // Format like "O2"
+        const oMatch = trimmed.match(/^O(\d+)$/i);
+        if (oMatch) {
+          const idx = parseInt(oMatch[1], 10) - 1;
+          if (idx >= 0 && idx < opts.length) return idx;
+        }
+        // Exact text match
+        const exact = opts.findIndex((opt) => opt === trimmed);
+        if (exact !== -1) return exact;
+        // Case-insensitive text match
+        const ci = opts.findIndex(
+          (opt) => (opt || "").toString().trim().toLowerCase() === trimmed.toLowerCase(),
+        );
+        if (ci !== -1) return ci;
+        // Any number within string (e.g., "Option 2") assumed 1-based
+        const numMatch = trimmed.match(/\d+/);
+        if (numMatch) {
+          const idx = parseInt(numMatch[0], 10) - 1;
+          if (idx >= 0 && idx < opts.length) return idx;
+        }
+      }
+      return -1;
+    };
+
     answers.forEach((answer) => {
       const { questionIndex, selectedAnswer } = answer;
 
       if (questionIndex < quiz.questions.length) {
         const question = quiz.questions[questionIndex];
-        const isCorrect = selectedAnswer === question.correctAnswer;
+        const options = question.options || [];
+        const userIdx = resolveIndex(selectedAnswer, options);
+        const correctIdx = resolveIndex(question.correctAnswer, options);
+
+        const isCorrect = userIdx !== -1 && correctIdx !== -1
+          ? userIdx === correctIdx
+          : selectedAnswer === question.correctAnswer;
 
         if (isCorrect) correctCount++;
 
