@@ -278,7 +278,6 @@ const QuizResultPage = () => {
                               Correct
                             </span>
                           )}
-
                           {isUserAnswer && (
                             <span
                               className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${

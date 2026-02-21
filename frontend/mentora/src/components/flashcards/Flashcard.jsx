@@ -2,20 +2,24 @@ import React, { useState } from "react";
 import { Star, RotateCcw } from "lucide-react";
 
 const Flashcard = ({ flashcard, onToggleStar, isFlipped, setIsFlipped }) => {
-  const handleFlip = () => setIsFlipped((prev) => !prev);
+  const [localFlipped, setLocalFlipped] = useState(false);
+  const flipped = typeof isFlipped === "boolean" ? isFlipped : localFlipped;
+  const setFlipped = typeof setIsFlipped === "function" ? setIsFlipped : setLocalFlipped;
+
+  const handleFlip = () => setFlipped((prev) => !prev);
   return (
     <div className="relative w-full h-72">
       <div
         className={`relative w-full h-full transition-transform duration-500 transform cursor-pointer`}
         style={{
           transformStyle: "preserve-3d",
-          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
         onClick={handleFlip}
       >
         {/* Front Face of the Card - Question */}
         <div
-          className="absolute inset-0 w-full h-full bg-whit/80 backdrop-blur-xl border-2 border-slate-200/60 rounded-2xl shadow-xl shadow-slate-200/50 p-8 flex flex-col justify-between"
+          className="absolute inset-0 w-full h-full bg-white/80 backdrop-blur-xl border-2 border-slate-200/60 rounded-2xl shadow-xl shadow-slate-200/50 p-8 flex flex-col justify-between"
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
