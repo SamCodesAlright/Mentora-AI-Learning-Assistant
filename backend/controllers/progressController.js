@@ -47,13 +47,13 @@ export const getDashboard = async (req, res, next) => {
         lastAccessed: -1,
       })
       .limit(5)
-      .select("title fileName lastAccessed status");
+      .select("_id title fileName lastAccessed status");
 
     const recentQuizzes = await Quiz.find({ userId })
       .sort({ createdAt: -1 })
       .limit(5)
       .populate("documentId", "title")
-      .select("title score totalQuestions completedAt");
+      .select("_id title score totalQuestions completedAt");
 
     // Study streak or tracking the daily progress of the user
     const studyStreak = Math.floor(Math.random() * 7) + 1; //Mock Data

@@ -20,7 +20,7 @@ const QuizTakePage = () => {
     const fetchQuiz = async () => {
       try {
         const res = await quizService.getQuizById(quizId);
-        setQuiz(res.data);
+        setQuiz(res);
       } catch (error) {
         toast.error("Failed to fetch quiz");
         console.error("Error fetching quiz:", error);

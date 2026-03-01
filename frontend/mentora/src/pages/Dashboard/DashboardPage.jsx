@@ -18,7 +18,7 @@ const DashboardPage = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await progressService.getDashboardData();
-        setDashboardData(response.data);
+        setDashboardData(response);
       } catch (error) {
         toast.error("Failed to fetch dashboard data.");
         console.error("Error fetching dashboard data:", error);
@@ -68,18 +68,18 @@ const DashboardPage = () => {
 
   const activities = [
     ...(dashboardData.recentActivity?.documents || []).map((doc) => ({
-      id: doc.id,
+      id: doc._id,
       type: "document",
       description: doc.title,
       timestamp: doc.lastAccessed,
-      link: `/documents/${doc.id}`,
+      link: `/documents/${doc._id}`,
     })),
     ...(dashboardData.recentActivity?.quizzes || []).map((quiz) => ({
-      id: quiz.id,
+      id: quiz._id,
       type: "quiz",
       description: quiz.title,
-      timestamp: quiz.lastAttempted,
-      link: `/quizzes/${quiz.id}`,
+      timestamp: quiz.completedAt || quiz.createdAt,
+      link: `/quizzes/${quiz._id}`,
     })),
   ].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
 

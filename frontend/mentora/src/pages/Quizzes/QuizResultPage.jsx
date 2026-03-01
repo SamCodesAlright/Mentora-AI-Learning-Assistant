@@ -42,7 +42,7 @@ const QuizResultPage = () => {
     );
   }
 
-  if (!results || !results.data) {
+  if (!results || !results.quiz) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -52,9 +52,7 @@ const QuizResultPage = () => {
     );
   }
 
-  const {
-    data: { quiz, results: detailedResults },
-  } = results;
+  const { quiz, results: detailedResults } = results;
 
   const score = quiz.score;
   const totalQuestions = detailedResults.length;
