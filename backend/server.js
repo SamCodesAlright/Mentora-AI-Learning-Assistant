@@ -30,7 +30,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 // Body parser middleware to parse incoming JSON data
 app.use(express.json());
@@ -39,6 +39,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from the React frontend app
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.get("/health", (req, res) => {
+  res.status(200).send("Mentora backend alive");
+});
 
 // API routes
 app.use("/api/auth", authRoutes);
