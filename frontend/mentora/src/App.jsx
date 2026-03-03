@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -18,9 +18,25 @@ import QuizResultPage from "./pages/Quizzes/QuizResultPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import { waitForBackend } from "./utils/backendStatus";
+import StartupScreen from "./components/common/StartupScreen";
 
 const App = () => {
+  const [backendChecking, setBackendChecking] = useState(true);
   const { isAuthenticated, loading } = useAuth();
+
+  useEffect(() => {
+    waitForBackend().then((ok) => {
+      setBackendChecking(false);
+      if (!ok) {
+        console.error("backend still unreachable");
+      }
+    });
+  }, []);
+
+  if (backendChecking) {
+    return <StartupScreen />;
+  }
 
   if (loading) {
     return (
