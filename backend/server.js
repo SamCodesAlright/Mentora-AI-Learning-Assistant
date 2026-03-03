@@ -41,7 +41,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/health", (req, res) => {
-  res.status(200).send("Mentora backend alive");
+  res.status(200).json({
+    status: "OK",
+    uptime: process.uptime(),
+    timestamp: new Date(),
+  });
 });
 
 // API routes
