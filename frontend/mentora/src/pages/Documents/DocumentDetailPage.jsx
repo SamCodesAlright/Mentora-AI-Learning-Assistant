@@ -38,7 +38,10 @@ const DocumentDetailPage = () => {
     if (!url) return null;
 
     if (url.startsWith("http://") || url.startsWith("https://")) {
-      return url;
+      if (url.includes("res.cloudinary.com")) {
+        return url;
+      }
+      return null;
     }
 
     return null;

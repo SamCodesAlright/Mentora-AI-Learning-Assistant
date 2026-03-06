@@ -296,7 +296,9 @@ export const explainConcept = async (req, res, next) => {
       },
       message: "Explanation generated successfully",
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 // @desc    Get chat history from document
@@ -319,11 +321,10 @@ export const getChatHistory = async (req, res, next) => {
     }).select("messages"); // Retrieve only the messages field
 
     if (!chatHistory) {
-      return res.status(404).json({
-        success: false,
+      return res.status(200).json({
+        success: true,
         data: [],
-        message: "Chat history not found for this document",
-        statusCode: 404,
+        message: "Chat history fetched successfully",
       });
     }
 
@@ -332,5 +333,7 @@ export const getChatHistory = async (req, res, next) => {
       data: chatHistory.messages,
       message: "Chat history fetched successfully",
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
