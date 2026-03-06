@@ -4,6 +4,7 @@ import Flashcard from "../models/Flashcard.js";
 import Quiz from "../models/Quiz.js";
 import { extractTextFromPDF } from "../utils/pdfParser.js";
 import { chunkText } from "../utils/textChunker.js";
+import { uploadPDFToCloudinary } from "../utils/cloudinary.js";
 import fs from "fs/promises";
 import mongoose from "mongoose";
 
@@ -33,7 +34,8 @@ export const uploadDocument = async (req, res, next) => {
     }
 
     // Constructing file URL for accessing the uploaded file
-    const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
+    const baseUrl =
+      process.env.SERVER_URL || `${req.protocol}://${req.get("host")}`;
     const fileUrl = `${baseUrl}/uploads/documents/${req.file.filename}`;
 
     const document = await Document.create({
@@ -41,6 +43,7 @@ export const uploadDocument = async (req, res, next) => {
       title,
       fileName: req.file.originalname,
       filePath: fileUrl, // Storing the file URL instead of path
+      url: fileUrl,
       fileSize: req.file.size,
       status: "processing",
     });
@@ -78,6 +81,16 @@ const processPDF = async (documentId, filePath) => {
       chunks: chunks,
       status: "ready",
     });
+
+    try {
+      const uploadResult = await uploadPDFToCloudinary(filePath);
+      await Document.findByIdAndUpdate(documentId, {
+        filePath: uploadResult.secure_url,
+        url: uploadResult.secure_url,
+      });
+    } catch (err) {
+      console.error(`Error uploading PDF ${documentId} to Cloudinary:`, err);
+    }
 
     console.log(`Document ${documentId} processed successfully.`);
   } catch (error) {
@@ -206,7 +219,9 @@ export const deleteDocument = async (req, res, next) => {
       });
     }
 
-    await fs.unlink(document.filePath).catch(() => {});
+    if (document.filePath && !document.filePath.startsWith("http")) {
+      await fs.unlink(document.filePath).catch(() => {});
+    }
 
     await document.deleteOne();
 

@@ -34,26 +34,36 @@ const DocumentDetailPage = () => {
   }, [id]);
 
   const getPdfUrl = () => {
-    if (!document?.filePath) return null;
+    const url = document?.url || document?.filePath;
+    if (!url) return null;
 
-    const filePath = document.filePath;
-
-    if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
-      return filePath;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
     }
 
-    const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
-    return `${baseUrl}${filePath.startsWith("/") ? "" : "/"}${filePath}`;
+    return null;
   };
 
   const renderContent = () => {
     if (loading) {
       return <Spinner />;
     }
-    if (!document || !document.filePath) {
-      return <div className="">PDF not available.</div>;
-    }
     const pdfUrl = getPdfUrl();
+    if (!pdfUrl) {
+      return (
+        <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+          <div className="p-4">
+            {document?.status === "processing" ? (
+              <div className="text-sm text-gray-700">
+                PDF is still processing. Please wait a moment and refresh.
+              </div>
+            ) : (
+              <div className="text-sm text-gray-700">PDF not available.</div>
+            )}
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
         <div className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-300">
