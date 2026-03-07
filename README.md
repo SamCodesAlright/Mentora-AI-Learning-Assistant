@@ -48,45 +48,38 @@ Studying from long PDFs is slow and tedious. **Mentora** makes it faster and sma
 
 ## 🖼️ Screenshots
 
-### 🏠 Landing / Home
-![Landing](docs/screenshots/landing.png)
-
----
-
 ### 🔑 Login
-![Login](docs/screenshots/login.png)
+![Login](screenshots/login.png)
 
 ---
 
 ### 📊 Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
+![Dashboard](screenshots/dashboard.png)
 
 ---
 
 ### 📤 Upload PDF
-![Upload](docs/screenshots/upload.png)
+![Upload](screenshots/upload-pdf.png)
 
 ---
 
 ### 📝 Summary
-![Summary](docs/screenshots/summary.png)
+![Summary](screenshots/summary.png)
 
 ---
 
 ### 🃏 Flashcards
-![Flashcards](docs/screenshots/flashcards.png)
+![Flashcards](screenshots/flashcards.png)
 
 ---
 
 ### 🧪 Quiz
-![Quiz](docs/screenshots/quiz.png)
+![Quiz](screenshots/quiz.png)
 
 ---
 
 ### 💬 Chat with Document
-![Chat](docs/screenshots/chat.png)
-
-> 📁 Place your screenshots in `docs/screenshots/` or update the paths above to match your file locations.
+![Chat](screenshots/chat.png)
 
 ---
 
