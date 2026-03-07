@@ -4,7 +4,7 @@
 
 **Transform your PDFs into summaries, flashcards, quizzes & more — powered by AI.**
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge)](YOUR_DEPLOYED_APP_URL_HERE)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge)](https://mentora-ai-zeta.vercel.app/login)
 ![Node.js](https://img.shields.io/badge/Node.js-LTS-green?style=for-the-badge&logo=node.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb)
@@ -244,9 +244,6 @@ npm run dev
 
 - 👥 **Role-based access (RBAC)** — admin/moderator roles
 - 🛡️ **Security hardening** — rate limiting, helmet, input sanitization
-- 🔍 **Search inside documents** — full-text search
-- 🔁 **Spaced repetition** — smart flashcard scheduling
-- 📚 **Multi-document knowledge base** — chat across many PDFs
 - 📈 **User analytics dashboard** — streaks, mastery, time spent
 - 📦 **Export options** — Anki decks, PDF summaries
 - 🐳 **CI/CD + Docker** — automated deployments
@@ -273,6 +270,6 @@ Add your license here (e.g., MIT) and include a `LICENSE` file at the repo root.
 
 <div align="center">
 
-Made with ❤️ to make studying less painful.
+Made with 🤖 to make studying less painful.
 
 </div>
