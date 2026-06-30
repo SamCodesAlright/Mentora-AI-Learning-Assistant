@@ -47,6 +47,13 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "LectureSync Backend is running...",
+  });
+});
+
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
